@@ -1,11 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Recipe
-from django.utils import timezone
 
 def main(request):
     recipes = Recipe.objects.filter(created_at__year=2023)
-    return render(request, 'main.html', {'recipes': recipes})
+    return render(request, 'recipe/main.html', {'recipes': recipes})
 
 def recipe_detail(request, id):
     recipe = get_object_or_404(Recipe, id=id)
-    return render(request, 'recipe_detail.html', {'recipe': recipe})
+    return render(request, 'recipe/recipe_detail.html', {'recipe': recipe})
