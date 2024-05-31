@@ -3,7 +3,7 @@ from .models import Recipe, Category
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'created_at', 'updated_at')
+    list_display = ('title', 'category', 'created_at', 'updated_at')  # Add created_at and updated_at
     list_filter = ('category',)
     search_fields = ('title', 'description')
     readonly_fields = ('created_at', 'updated_at')

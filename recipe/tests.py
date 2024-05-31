@@ -1,33 +1,44 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
-from .models import Recipe
-from datetime import datetime
+from .models import Category, Recipe
+
 
 class RecipeViewsTestCase(TestCase):
-    def setUp(self):
-        # Створення тестових даних для рецептів
-        self.recipe1 = Recipe.objects.create(
-            title='Перший рецепт',
-            created_at=datetime(2023, 1, 1),
-            description='Опис першого рецепту'
-        )
-        self.recipe2 = Recipe.objects.create(
-            title='Другий рецепт',
-            created_at=datetime(2022, 1, 1),
-            description='Опис другого рецепту'
+    @classmethod
+    def setUpTestData(cls):
+        cls.category = Category.objects.create(name='Test Category')
+        cls.recipe = Recipe.objects.create(
+            title='Test Recipe',
+            description='Test Description',
+            instructions='Test Instructions',
+            ingredients='Test Ingredients',
+            category=cls.category
         )
 
-    def test_main_view(self):
-        client = Client()
-        response = client.get(reverse('main'))
+    def test_category_list_view(self):
+        response = self.client.get(reverse('category_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'category_list.html')
+        categories = Category.objects.all()
+        self.assertQuerysetEqual(response.context['categories'], categories)
+
+
+    def test_main_view_with_recipes(self):
+        response = self.client.get(reverse('main'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'main.html')
-        self.assertContains(response, 'Перший рецепт')
-        self.assertNotContains(response, 'Другий рецепт')
+        recipes = Recipe.objects.filter(created_at__year=2024)
+        self.assertQuerysetEqual(response.context['recipes'], recipes)
+
+    def test_main_view_no_recipes(self):
+        Recipe.objects.all().delete()
+        response = self.client.get(reverse('main'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'main.html')
+        self.assertContains(response, 'No recipes found.')
 
     def test_recipe_detail_view(self):
-        client = Client()
-        response = client.get(reverse('recipe_detail', kwargs={'id': self.recipe1.id}))
+        response = self.client.get(reverse('recipe_detail', args=[self.recipe.id]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'recipe_detail.html')
-        self.assertContains(response, 'Опис першого рецепту')
+        self.assertContains(response, self.recipe.title)
