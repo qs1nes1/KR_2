@@ -1,12 +1,11 @@
-{% extends 'base.html' %}
-
-{% block content %}
-  <div class="container">
-    <h1 class="display-4">{{ recipe.title }}</h1>
-    <p class="lead">Description: {{ recipe.description }}</p>
-    <p>Instructions: {{ recipe.instructions }}</p>
-    <p>Ingredients: {{ recipe.ingredients }}</p>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ recipe.title }}</title>
+</head>
+<body>
+    <h1>{{ recipe.title }}</h1>
+    <p>{{ recipe.description }}</p>
     <p>Created at: {{ recipe.created_at }}</p>
-    <p>Updated at: {{ recipe.updated_at }}</p>
-  </div>
-{% endblock %}
+</body>
+</html>
