@@ -1,0 +1,16 @@
+<!-- recipe/templates/category_list.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Categories</title>
+</head>
+<body>
+    <h1>Categories</h1>
+    <ul>
+        {% for category in categories %}
+            <li>{{ category.name }} ({{ category.recipe_count }} recipes)</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
